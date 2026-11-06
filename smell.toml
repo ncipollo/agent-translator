@@ -1,0 +1,6 @@
+[[rule]]
+name = "default"
+include = ["*.rs"]
+max_complexity = 15
+max_lines = 600
+max_comments = 25
