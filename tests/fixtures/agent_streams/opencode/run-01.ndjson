@@ -1,0 +1,6 @@
+{"type":"step_start","sessionID":"ses-1","part":{"type":"step-start"}}
+{"type":"reasoning","sessionID":"ses-1","part":{"type":"reasoning","text":"Consider options."}}
+{"type":"tool_use","sessionID":"ses-1","part":{"callID":"c1","tool":"bash","state":{"status":"completed","input":{"command":"pwd"}}}}
+{"type":"text","sessionID":"ses-1","part":{"type":"text","text":"Finished."}}
+{"type":"step_finish","sessionID":"ses-1","part":{"reason":"tool-calls","tokens":{"input":1}}}
+{"type":"step_finish","sessionID":"ses-1","part":{"reason":"stop","cost":0.002,"tokens":{"input":12,"output":4}}}

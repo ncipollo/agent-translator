@@ -1,0 +1,10 @@
+{"cwd":"/work","model":"auto","session_id":"cur-1","type":"system_init"}
+{"delta":true,"text":"Hel","type":"text"}
+{"delta":true,"text":"lo","type":"text"}
+{"id":"t1","input":{"command":"ls"},"name":"shell","type":"tool_call"}
+{"content":"a.txt\n","is_error":false,"tool_use_id":"t1","type":"tool_result"}
+{"id":"t2","input":{"path":"a.txt"},"name":"read","type":"tool_call"}
+{"content":"body","is_error":false,"tool_use_id":"t2","type":"tool_result"}
+{"id":"t3","input":{"mysteryToolCall":{"args":{"x":1}}},"name":"tool","type":"tool_call"}
+{"content":"","is_error":false,"tool_use_id":"t3","type":"tool_result"}
+{"duration_ms":900,"result":"Hello","success":true,"type":"session_result"}

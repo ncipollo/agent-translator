@@ -7,7 +7,9 @@ mod loader;
 use serde::{Deserialize, Serialize};
 
 pub use env_config::EnvConfig;
-pub use loader::{LoadError, LoadedAgent, load_from_path, load_from_str};
+pub use loader::{
+    LoadError, LoadedAgent, load_from_path, load_from_str, load_with, parse_validated_rules,
+};
 
 /// How an agent's stdout is interpreted.
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]

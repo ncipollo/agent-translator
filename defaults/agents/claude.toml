@@ -1,0 +1,8 @@
+cmd = ["claude", "-p", "--output-format", "stream-json", "--verbose", "--permission-mode", "auto", "--session-id", "{{session_id}}"]
+resume = ["claude", "--resume", "{{session_id}}"]
+headless_resume = ["claude", "-p", "--output-format", "stream-json", "--verbose", "--permission-mode", "auto", "--resume", "{{session_id}}"]
+parse_session_id = false
+
+[output_parsing]
+type = "typed"
+rules_file = "parsing/claude.json"

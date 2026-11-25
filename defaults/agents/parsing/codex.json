@@ -1,0 +1,318 @@
+[
+  {
+    "name": "thread-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "thread.started"
+      }
+    ],
+    "emit": {
+      "event": "system_init",
+      "fields": {
+        "session_id": {
+          "path": "thread_id"
+        }
+      }
+    }
+  },
+  {
+    "name": "agent-message",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "item.completed"
+      },
+      {
+        "op": "eq",
+        "path": "item.type",
+        "value": "agent_message"
+      }
+    ],
+    "emit": {
+      "event": "text",
+      "fields": {
+        "text": {
+          "path": "item.text"
+        }
+      }
+    }
+  },
+  {
+    "name": "reasoning",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "item.completed"
+      },
+      {
+        "op": "eq",
+        "path": "item.type",
+        "value": "reasoning"
+      }
+    ],
+    "emit": {
+      "event": "thinking",
+      "fields": {
+        "text": {
+          "path": "item.text"
+        }
+      }
+    }
+  },
+  {
+    "name": "shell-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "item.started"
+      },
+      {
+        "op": "eq",
+        "path": "item.type",
+        "value": "command_execution"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "item.id"
+        },
+        "name": {
+          "value": "shell"
+        },
+        "input": {
+          "path": "item.command",
+          "default": ""
+        }
+      }
+    }
+  },
+  {
+    "name": "mcp-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "item.started"
+      },
+      {
+        "op": "eq",
+        "path": "item.type",
+        "value": "mcp_tool_call"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "item.id"
+        },
+        "name": {
+          "concat": [
+            {
+              "path": "item.server"
+            },
+            {
+              "path": "item.tool"
+            }
+          ],
+          "sep": ".",
+          "default": "mcp"
+        },
+        "input": {
+          "path": "item.arguments",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "shell-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "item.completed"
+      },
+      {
+        "op": "eq",
+        "path": "item.type",
+        "value": "command_execution"
+      },
+      {
+        "op": "eq",
+        "path": "item.status",
+        "value": "completed"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "item.id"
+        },
+        "content": {
+          "path": "item.aggregated_output",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "shell-failed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "item.completed"
+      },
+      {
+        "op": "eq",
+        "path": "item.type",
+        "value": "command_execution"
+      },
+      {
+        "op": "eq",
+        "path": "item.status",
+        "value": "failed"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "item.id"
+        },
+        "content": {
+          "path": "item.aggregated_output",
+          "default": ""
+        },
+        "is_error": {
+          "value": true
+        }
+      }
+    }
+  },
+  {
+    "name": "mcp-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "item.completed"
+      },
+      {
+        "op": "eq",
+        "path": "item.type",
+        "value": "mcp_tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "item.status",
+        "value": "completed"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "item.id"
+        },
+        "content": {
+          "path": "item.result.content.0.text",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "mcp-failed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "item.completed"
+      },
+      {
+        "op": "eq",
+        "path": "item.type",
+        "value": "mcp_tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "item.status",
+        "value": "failed"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "item.id"
+        },
+        "content": {
+          "path": "item.error.message",
+          "default": ""
+        },
+        "is_error": {
+          "value": true
+        }
+      }
+    }
+  },
+  {
+    "name": "turn-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "turn.completed"
+      }
+    ],
+    "emit": {
+      "event": "session_result",
+      "fields": {
+        "success": {
+          "value": true
+        },
+        "usage": {
+          "path": "usage"
+        }
+      }
+    }
+  },
+  {
+    "name": "turn-failed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "turn.failed"
+      }
+    ],
+    "emit": {
+      "event": "session_result",
+      "fields": {
+        "success": {
+          "value": false
+        },
+        "error": {
+          "path": "error.message",
+          "default": "turn failed"
+        }
+      }
+    }
+  }
+]

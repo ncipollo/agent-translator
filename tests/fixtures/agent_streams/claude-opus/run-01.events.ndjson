@@ -1,0 +1,8 @@
+{"cwd":"/work","model":"claude-sonnet","session_id":"sess-1","tools":["Read","Bash"],"type":"system_init"}
+{"data":{"session_id":"sess-1","subtype":"compact_boundary","type":"system"},"level":"info","subtype":"compact_boundary","type":"system_notice"}
+{"text":"Plan the read.","type":"thinking"}
+{"delta":false,"text":"Reading the file.","type":"text"}
+{"id":"tu_1","input":{"path":"a.txt"},"name":"Read","type":"tool_call"}
+{"content":"file body","is_error":false,"tool_use_id":"tu_1","type":"tool_result"}
+{"delta":false,"text":"Done.","type":"text"}
+{"cost_usd":0.01,"duration_ms":1200,"result":"Done.","success":true,"type":"session_result","usage":{"input_tokens":10,"output_tokens":5}}

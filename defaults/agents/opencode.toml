@@ -1,0 +1,8 @@
+cmd = ["opencode", "run", "--format", "json", "--thinking", "--dangerously-skip-permissions"]
+resume = ["opencode", "--session", "{{session_id}}"]
+headless_resume = ["opencode", "run", "--format", "json", "--thinking", "--dangerously-skip-permissions", "--session", "{{session_id}}"]
+parse_session_id = true
+
+[output_parsing]
+type = "typed"
+rules_file = "parsing/opencode.json"

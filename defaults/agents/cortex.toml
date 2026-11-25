@@ -1,0 +1,8 @@
+# `-p` must stay last: it consumes the prompt appended at spawn time.
+cmd = ["cortex", "--output-format", "stream-json", "--dangerously-allow-all-tool-calls", "--session-id", "{{session_id}}", "-p"]
+resume = ["cortex", "--resume", "{{session_id}}"]
+parse_session_id = false
+
+[output_parsing]
+type = "typed"
+rules_file = "parsing/cortex.json"

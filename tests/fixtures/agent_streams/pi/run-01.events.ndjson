@@ -1,0 +1,7 @@
+{"cwd":"/work","session_id":"pi-1","type":"system_init"}
+{"text":"Plan.","type":"thinking"}
+{"delta":false,"text":"Checking.","type":"text"}
+{"id":"p1","input":{"path":"a.txt"},"name":"read","type":"tool_call"}
+{"content":"body","is_error":false,"tool_use_id":"p1","type":"tool_result"}
+{"delta":false,"text":"Done.","type":"text"}
+{"success":true,"type":"session_result"}

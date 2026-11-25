@@ -1,0 +1,8 @@
+cmd = ["cursor-agent", "-p", "--force", "--output-format", "stream-json"]
+resume = ["cursor-agent", "--resume", "{{session_id}}"]
+headless_resume = ["cursor-agent", "-p", "--force", "--output-format", "stream-json", "--resume", "{{session_id}}"]
+parse_session_id = true
+
+[output_parsing]
+type = "typed"
+rules_file = "parsing/cursor.json"

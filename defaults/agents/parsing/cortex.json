@@ -1,0 +1,241 @@
+[
+  {
+    "name": "system-init",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "system"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "init"
+      }
+    ],
+    "emit": {
+      "event": "system_init",
+      "fields": {
+        "session_id": {
+          "path": "session_id"
+        },
+        "model": {
+          "path": "model"
+        },
+        "cwd": {
+          "path": "cwd"
+        },
+        "tools": {
+          "path": "tools"
+        }
+      }
+    }
+  },
+  {
+    "name": "system-notice",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "system"
+      }
+    ],
+    "emit": {
+      "event": "system_notice",
+      "fields": {
+        "subtype": {
+          "path": "subtype",
+          "default": "unknown"
+        },
+        "level": {
+          "value": "info"
+        },
+        "data": {
+          "path": "."
+        }
+      }
+    }
+  },
+  {
+    "name": "assistant-text",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "assistant"
+      }
+    ],
+    "iterate": "message.content",
+    "when_each": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "text"
+      }
+    ],
+    "emit": {
+      "event": "text",
+      "fields": {
+        "text": {
+          "path": "text"
+        }
+      }
+    }
+  },
+  {
+    "name": "assistant-thinking",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "assistant"
+      }
+    ],
+    "iterate": "message.content",
+    "when_each": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "thinking"
+      }
+    ],
+    "emit": {
+      "event": "thinking",
+      "fields": {
+        "text": {
+          "path": "thinking"
+        }
+      }
+    }
+  },
+  {
+    "name": "assistant-tool-use",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "assistant"
+      }
+    ],
+    "iterate": "message.content",
+    "when_each": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_use"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "id"
+        },
+        "name": {
+          "path": "name"
+        },
+        "input": {
+          "path": "input",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "user-tool-result",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "user"
+      }
+    ],
+    "iterate": "message.content",
+    "when_each": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_result"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "tool_use_id"
+        },
+        "content": {
+          "path": "content",
+          "default": ""
+        },
+        "is_error": {
+          "path": "is_error",
+          "default": false
+        }
+      }
+    }
+  },
+  {
+    "name": "result-success",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "result"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "success"
+      }
+    ],
+    "emit": {
+      "event": "session_result",
+      "fields": {
+        "success": {
+          "value": true
+        },
+        "duration_ms": {
+          "path": "duration_ms"
+        },
+        "cost_usd": {
+          "path": "total_cost_usd"
+        },
+        "result": {
+          "path": "result"
+        },
+        "usage": {
+          "path": "usage"
+        }
+      }
+    }
+  },
+  {
+    "name": "result-error",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "result"
+      }
+    ],
+    "emit": {
+      "event": "session_result",
+      "fields": {
+        "success": {
+          "value": false
+        },
+        "duration_ms": {
+          "path": "duration_ms"
+        },
+        "cost_usd": {
+          "path": "total_cost_usd"
+        },
+        "error": {
+          "path": "subtype",
+          "default": "error"
+        }
+      }
+    }
+  }
+]

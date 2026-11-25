@@ -1,0 +1,6 @@
+cmd = ["pi", "-p", "--mode", "json", "--no-session"]
+parse_session_id = false
+
+[output_parsing]
+type = "typed"
+rules_file = "parsing/pi.json"

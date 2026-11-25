@@ -1,0 +1,5 @@
+{"type":"session","id":"pi-1","cwd":"/work"}
+{"type":"message_end","message":{"role":"assistant","content":[{"type":"thinking","thinking":"Plan."},{"type":"text","text":"Checking."},{"type":"toolCall","id":"p1","name":"read","arguments":{"path":"a.txt"}}]}}
+{"type":"message_end","message":{"role":"toolResult","toolCallId":"p1","isError":false,"content":[{"type":"text","text":"body"}]}}
+{"type":"message_end","message":{"role":"assistant","content":[{"type":"text","text":"Done."}]}}
+{"type":"agent_end"}

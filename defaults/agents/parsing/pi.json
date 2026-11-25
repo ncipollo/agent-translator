@@ -1,0 +1,172 @@
+[
+  {
+    "name": "session",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "session"
+      }
+    ],
+    "emit": {
+      "event": "system_init",
+      "fields": {
+        "session_id": {
+          "path": "id"
+        },
+        "cwd": {
+          "path": "cwd"
+        }
+      }
+    }
+  },
+  {
+    "name": "assistant-text",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "message_end"
+      },
+      {
+        "op": "eq",
+        "path": "message.role",
+        "value": "assistant"
+      }
+    ],
+    "iterate": "message.content",
+    "when_each": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "text"
+      }
+    ],
+    "emit": {
+      "event": "text",
+      "fields": {
+        "text": {
+          "path": "text"
+        }
+      }
+    }
+  },
+  {
+    "name": "assistant-thinking",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "message_end"
+      },
+      {
+        "op": "eq",
+        "path": "message.role",
+        "value": "assistant"
+      }
+    ],
+    "iterate": "message.content",
+    "when_each": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "thinking"
+      }
+    ],
+    "emit": {
+      "event": "thinking",
+      "fields": {
+        "text": {
+          "path": "thinking"
+        }
+      }
+    }
+  },
+  {
+    "name": "assistant-tool-call",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "message_end"
+      },
+      {
+        "op": "eq",
+        "path": "message.role",
+        "value": "assistant"
+      }
+    ],
+    "iterate": "message.content",
+    "when_each": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "toolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "id"
+        },
+        "name": {
+          "path": "name"
+        },
+        "input": {
+          "path": "arguments",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "tool-result",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "message_end"
+      },
+      {
+        "op": "eq",
+        "path": "message.role",
+        "value": "toolResult"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "message.toolCallId"
+        },
+        "content": {
+          "path": "message.content.0.text",
+          "default": ""
+        },
+        "is_error": {
+          "path": "message.isError",
+          "default": false
+        }
+      }
+    }
+  },
+  {
+    "name": "agent-end",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "agent_end"
+      }
+    ],
+    "emit": {
+      "event": "session_result",
+      "fields": {
+        "success": {
+          "value": true
+        }
+      }
+    }
+  }
+]
