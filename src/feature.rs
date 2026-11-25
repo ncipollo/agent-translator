@@ -6,4 +6,5 @@ pub mod event;
 pub mod output;
 pub mod process;
 pub mod rules;
+pub mod run;
 pub mod translate;
