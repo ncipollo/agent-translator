@@ -1,0 +1,110 @@
+[
+  {
+    "name": "step-start",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "step_start"
+      }
+    ],
+    "emit": {
+      "event": "system_init",
+      "fields": {
+        "session_id": {
+          "path": "sessionID"
+        }
+      }
+    }
+  },
+  {
+    "name": "text",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "text"
+      }
+    ],
+    "emit": {
+      "event": "text",
+      "fields": {
+        "text": {
+          "path": "part.text"
+        }
+      }
+    }
+  },
+  {
+    "name": "reasoning",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "reasoning"
+      }
+    ],
+    "emit": {
+      "event": "thinking",
+      "fields": {
+        "text": {
+          "path": "part.text"
+        }
+      }
+    }
+  },
+  {
+    "name": "tool-use",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_use"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "part.callID"
+        },
+        "name": {
+          "path": "part.tool"
+        },
+        "input": {
+          "path": "part.state.input",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "step-finish",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "step_finish"
+      },
+      {
+        "op": "eq",
+        "path": "part.reason",
+        "value": "stop"
+      }
+    ],
+    "emit": {
+      "event": "session_result",
+      "fields": {
+        "success": {
+          "value": true
+        },
+        "usage": {
+          "path": "part.tokens"
+        },
+        "cost_usd": {
+          "path": "part.cost"
+        }
+      }
+    }
+  }
+]

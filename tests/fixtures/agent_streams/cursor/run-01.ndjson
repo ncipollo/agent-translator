@@ -1,0 +1,10 @@
+{"type":"system","subtype":"init","session_id":"cur-1","model":"auto","cwd":"/work"}
+{"type":"assistant","message":{"content":[{"type":"text","text":"Hel"}]}}
+{"type":"assistant","message":{"content":[{"type":"text","text":"lo"}]}}
+{"type":"tool_call","subtype":"started","call_id":"t1","tool_call":{"shellToolCall":{"args":{"command":"ls"}}}}
+{"type":"tool_call","subtype":"completed","call_id":"t1","tool_call":{"shellToolCall":{"args":{"command":"ls"},"result":{"success":{"stdout":"a.txt\n"}}}}}
+{"type":"tool_call","subtype":"started","call_id":"t2","tool_call":{"readToolCall":{"args":{"path":"a.txt"}}}}
+{"type":"tool_call","subtype":"completed","call_id":"t2","tool_call":{"readToolCall":{"args":{"path":"a.txt"},"result":{"success":{"content":"body"}}}}}
+{"type":"tool_call","subtype":"started","call_id":"t3","tool_call":{"mysteryToolCall":{"args":{"x":1}}}}
+{"type":"tool_call","subtype":"completed","call_id":"t3","tool_call":{"mysteryToolCall":{"args":{"x":1}}}}
+{"type":"result","subtype":"success","duration_ms":900,"result":"Hello"}

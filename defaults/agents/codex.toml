@@ -1,0 +1,7 @@
+cmd = ["codex", "exec", "--json", "--skip-git-repo-check", "-s", "danger-full-access"]
+resume = ["codex", "resume", "{{session_id}}"]
+parse_session_id = true
+
+[output_parsing]
+type = "typed"
+rules_file = "parsing/codex.json"

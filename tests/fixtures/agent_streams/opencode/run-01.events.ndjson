@@ -1,0 +1,6 @@
+{"session_id":"ses-1","type":"system_init"}
+{"text":"Consider options.","type":"thinking"}
+{"id":"c1","input":{"command":"pwd"},"name":"bash","type":"tool_call"}
+{"delta":false,"text":"Finished.","type":"text"}
+{"raw":{"part":{"reason":"tool-calls","tokens":{"input":1}},"sessionID":"ses-1","type":"step_finish"},"type":"unknown"}
+{"cost_usd":0.002,"success":true,"type":"session_result","usage":{"input":12,"output":4}}

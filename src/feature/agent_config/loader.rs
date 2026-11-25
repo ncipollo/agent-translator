@@ -57,6 +57,9 @@ impl fmt::Display for LoadError {
 
 impl std::error::Error for LoadError {}
 
+/// Resolves a config's `rules_file` into validated rules.
+pub type RulesResolver<'a> = &'a dyn Fn(&str) -> Result<Vec<MapRule>, LoadError>;
+
 /// Reads the TOML at `path`; `rules_file` resolves relative to the file's directory.
 pub fn load_from_path(path: &Path) -> Result<LoadedAgent, LoadError> {
     let contents = fs::read_to_string(path).map_err(|source| LoadError::Read {
@@ -64,37 +67,62 @@ pub fn load_from_path(path: &Path) -> Result<LoadedAgent, LoadError> {
         source,
     })?;
     let base_dir = path.parent().unwrap_or_else(|| Path::new("."));
-    load(&contents, base_dir, format!("'{}'", path.display()))
+    load_with(
+        &contents,
+        &format!("'{}'", path.display()),
+        &disk_rules(base_dir),
+    )
 }
 
 /// Loads an embedded config; `rules_file` resolves relative to `base_dir`.
 pub fn load_from_str(contents: &str, base_dir: &Path) -> Result<LoadedAgent, LoadError> {
-    load(contents, base_dir, "<inline>".to_string())
+    load_with(contents, "<inline>", &disk_rules(base_dir))
 }
 
-fn load(contents: &str, base_dir: &Path, origin: String) -> Result<LoadedAgent, LoadError> {
+/// Shared loading pipeline: parse the TOML, check it, then resolve rules through `resolve_rules`
+/// (only called for typed parsing with a `rules_file`). `origin` labels errors.
+pub fn load_with(
+    contents: &str,
+    origin: &str,
+    resolve_rules: RulesResolver,
+) -> Result<LoadedAgent, LoadError> {
     let config: AgentConfig = toml::from_str(contents).map_err(|source| LoadError::Parse {
-        origin: origin.clone(),
+        origin: origin.to_string(),
         source,
     })?;
     if config.cmd.is_empty() {
-        return Err(LoadError::EmptyCmd { origin });
+        return Err(LoadError::EmptyCmd {
+            origin: origin.to_string(),
+        });
     }
-    let rules = load_rules(&config.output_parsing, base_dir)?;
+    let rules = match &config.output_parsing {
+        OutputParsing::Typed {
+            rules_file: Some(rules_file),
+        } => resolve_rules(rules_file)?,
+        _ => Vec::new(),
+    };
     Ok(LoadedAgent { config, rules })
 }
 
-fn load_rules(parsing: &OutputParsing, base_dir: &Path) -> Result<Vec<MapRule>, LoadError> {
-    let OutputParsing::Typed {
-        rules_file: Some(rules_file),
-    } = parsing
-    else {
-        return Ok(Vec::new());
+/// Parses and validates rules text, reporting problems against `path`.
+pub fn parse_validated_rules(raw: &str, path: &str) -> Result<Vec<MapRule>, LoadError> {
+    let invalid = |message: String| LoadError::InvalidRules {
+        path: PathBuf::from(path),
+        message,
     };
-    let path = base_dir.join(rules_file);
-    let rules = parse_rules_file(&path).map_err(LoadError::Rules)?;
-    validate_rules(&rules).map_err(|message| LoadError::InvalidRules { path, message })?;
+    let rules: Vec<MapRule> = serde_json::from_str(raw).map_err(|e| invalid(e.to_string()))?;
+    validate_rules(&rules).map_err(invalid)?;
     Ok(rules)
+}
+
+fn disk_rules(base_dir: &Path) -> impl Fn(&str) -> Result<Vec<MapRule>, LoadError> {
+    let base_dir = base_dir.to_path_buf();
+    move |rules_file| {
+        let path = base_dir.join(rules_file);
+        let rules = parse_rules_file(&path).map_err(LoadError::Rules)?;
+        validate_rules(&rules).map_err(|message| LoadError::InvalidRules { path, message })?;
+        Ok(rules)
+    }
 }
 
 #[cfg(test)]

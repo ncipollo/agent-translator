@@ -1,0 +1,785 @@
+[
+  {
+    "name": "system-init",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "system"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "init"
+      }
+    ],
+    "emit": {
+      "event": "system_init",
+      "fields": {
+        "session_id": {
+          "path": "session_id"
+        },
+        "model": {
+          "path": "model"
+        },
+        "cwd": {
+          "path": "cwd"
+        }
+      }
+    }
+  },
+  {
+    "name": "assistant-text",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "assistant"
+      }
+    ],
+    "iterate": "message.content",
+    "when_each": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "text"
+      }
+    ],
+    "emit": {
+      "event": "text",
+      "fields": {
+        "text": {
+          "path": "text"
+        },
+        "delta": {
+          "value": true
+        }
+      }
+    }
+  },
+  {
+    "name": "shell-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.shellToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "shell"
+        },
+        "input": {
+          "path": "tool_call.shellToolCall.args",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "shell-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.shellToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "path": "tool_call.shellToolCall.result.success.stdout",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "read-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.readToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "read"
+        },
+        "input": {
+          "path": "tool_call.readToolCall.args",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "read-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.readToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "path": "tool_call.readToolCall.result.success.content",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "edit-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.editToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "edit"
+        },
+        "input": {
+          "path": "tool_call.editToolCall.args",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "edit-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.editToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "path": "tool_call.editToolCall.result.success.path",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "write-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.writeToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "write"
+        },
+        "input": {
+          "path": "tool_call.writeToolCall.args",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "write-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.writeToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "path": "tool_call.writeToolCall.result.success.path",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "grep-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.grepToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "grep"
+        },
+        "input": {
+          "path": "tool_call.grepToolCall.args",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "grep-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.grepToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "path": "tool_call.grepToolCall.result.success.output",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "ls-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.lsToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "ls"
+        },
+        "input": {
+          "path": "tool_call.lsToolCall.args",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "ls-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.lsToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "path": "tool_call.lsToolCall.result.success.output",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "glob-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.globToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "glob"
+        },
+        "input": {
+          "path": "tool_call.globToolCall.args",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "glob-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.globToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "path": "tool_call.globToolCall.result.success.output",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "delete-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.deleteToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "delete"
+        },
+        "input": {
+          "path": "tool_call.deleteToolCall.args",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "delete-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.deleteToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "path": "tool_call.deleteToolCall.result.success.path",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "update_todos-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.updateTodosToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "update_todos"
+        },
+        "input": {
+          "path": "tool_call.updateTodosToolCall.args",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "update_todos-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      },
+      {
+        "op": "exists",
+        "path": "tool_call.updateTodosToolCall"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "path": "tool_call.updateTodosToolCall.result.success.summary",
+          "default": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "generic-tool-started",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "started"
+      }
+    ],
+    "emit": {
+      "event": "tool_call",
+      "fields": {
+        "id": {
+          "path": "call_id"
+        },
+        "name": {
+          "value": "tool"
+        },
+        "input": {
+          "path": "tool_call",
+          "default": {}
+        }
+      }
+    }
+  },
+  {
+    "name": "generic-tool-completed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "tool_call"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "completed"
+      }
+    ],
+    "emit": {
+      "event": "tool_result",
+      "fields": {
+        "tool_use_id": {
+          "path": "call_id"
+        },
+        "content": {
+          "value": ""
+        },
+        "is_error": {
+          "value": false
+        }
+      }
+    }
+  },
+  {
+    "name": "result-success",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "result"
+      },
+      {
+        "op": "eq",
+        "path": "subtype",
+        "value": "success"
+      }
+    ],
+    "emit": {
+      "event": "session_result",
+      "fields": {
+        "success": {
+          "value": true
+        },
+        "duration_ms": {
+          "path": "duration_ms"
+        },
+        "result": {
+          "path": "result"
+        }
+      }
+    }
+  },
+  {
+    "name": "result-error",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "result"
+      }
+    ],
+    "emit": {
+      "event": "session_result",
+      "fields": {
+        "success": {
+          "value": false
+        },
+        "duration_ms": {
+          "path": "duration_ms"
+        },
+        "error": {
+          "path": "result",
+          "default": "error"
+        }
+      }
+    }
+  }
+]
