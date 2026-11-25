@@ -3,5 +3,6 @@
 pub mod agent_config;
 pub mod defaults;
 pub mod event;
+pub mod process;
 pub mod rules;
 pub mod translate;
