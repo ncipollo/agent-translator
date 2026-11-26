@@ -57,6 +57,59 @@
     }
   },
   {
+    "name": "rate-limit-allowed",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "rate_limit_event"
+      },
+      {
+        "op": "eq",
+        "path": "rate_limit_info.status",
+        "value": "allowed"
+      }
+    ],
+    "emit": {
+      "event": "system_notice",
+      "fields": {
+        "subtype": {
+          "value": "rate_limit"
+        },
+        "level": {
+          "value": "info"
+        },
+        "data": {
+          "path": "rate_limit_info"
+        }
+      }
+    }
+  },
+  {
+    "name": "rate-limit",
+    "when": [
+      {
+        "op": "eq",
+        "path": "type",
+        "value": "rate_limit_event"
+      }
+    ],
+    "emit": {
+      "event": "system_notice",
+      "fields": {
+        "subtype": {
+          "value": "rate_limit"
+        },
+        "level": {
+          "value": "warn"
+        },
+        "data": {
+          "path": "rate_limit_info"
+        }
+      }
+    }
+  },
+  {
     "name": "assistant-text",
     "when": [
       {
