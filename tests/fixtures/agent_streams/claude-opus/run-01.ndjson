@@ -3,4 +3,6 @@
 {"type":"assistant","message":{"content":[{"type":"thinking","thinking":"Plan the read."},{"type":"text","text":"Reading the file."},{"type":"tool_use","id":"tu_1","name":"Read","input":{"path":"a.txt"}}]}}
 {"type":"user","message":{"content":[{"type":"tool_result","tool_use_id":"tu_1","content":"file body"}]}}
 {"type":"assistant","message":{"content":[{"type":"text","text":"Done."}]}}
+{"type":"rate_limit_event","rate_limit_info":{"status":"allowed","resetsAt":1795644000,"rateLimitType":"five_hour","unifiedWindows":{"five_hour":{"utilization":0.12,"resetsAt":1795644000,"status":"allowed"}}},"uuid":"uuid-1","session_id":"sess-1"}
+{"type":"rate_limit_event","rate_limit_info":{"status":"rejected","resetsAt":1795644000,"rateLimitType":"five_hour","unifiedWindows":{"five_hour":{"utilization":1.0,"resetsAt":1795644000,"status":"rejected"}}},"uuid":"uuid-2","session_id":"sess-1"}
 {"type":"result","subtype":"success","duration_ms":1200,"total_cost_usd":0.01,"result":"Done.","usage":{"input_tokens":10,"output_tokens":5}}

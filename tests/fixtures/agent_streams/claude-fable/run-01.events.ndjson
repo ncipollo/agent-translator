@@ -5,4 +5,6 @@
 {"id":"tu_1","input":{"path":"a.txt"},"name":"Read","type":"tool_call"}
 {"content":"file body","is_error":false,"tool_use_id":"tu_1","type":"tool_result"}
 {"delta":false,"text":"Done.","type":"text"}
+{"data":{"rateLimitType":"five_hour","resetsAt":1795644000,"status":"allowed","unifiedWindows":{"five_hour":{"resetsAt":1795644000,"status":"allowed","utilization":0.12}}},"level":"info","subtype":"rate_limit","type":"system_notice"}
+{"data":{"rateLimitType":"five_hour","resetsAt":1795644000,"status":"rejected","unifiedWindows":{"five_hour":{"resetsAt":1795644000,"status":"rejected","utilization":1.0}}},"level":"warn","subtype":"rate_limit","type":"system_notice"}
 {"cost_usd":0.01,"duration_ms":1200,"result":"Done.","success":true,"type":"session_result","usage":{"input_tokens":10,"output_tokens":5}}
